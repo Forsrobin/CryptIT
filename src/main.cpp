@@ -7,7 +7,6 @@ int main(int argc, char** argv) {
 
     std::cout << "Enter password: ";
     crypt.setPassword();
-    std::cout << "Password: " << crypt.getPassword() << std::endl;
     
     // Check so the keys exsist
     if(!crypt.checkIfKeysExsist()) {
@@ -26,13 +25,24 @@ int main(int argc, char** argv) {
       return 0;
     }
 
-    // // Load all the files
-    // crypt.fileManager.setFiles(crypt.fileManager.getFilesRecursivly("."));
+    // Load all the files
+    crypt.fileManager.setFiles(crypt.fileManager.getFilesRecursivly("."));
 
-    // // print the files
-    // crypt.fileManager.printFiles();
+    // Ask the user if they want to encrypt or decrypt
+    std::cout << "Do you want to encrypt or decrypt? (e/d): ";
+    std::string ipt;
+    getline(std::cin, ipt);
 
-    std::cin.get();
+    // Encrypt
+    if(ipt == "e") {
+      crypt.encrypt();
+    } else if(ipt == "d") {
+      crypt.decrypt();
+    } else {
+      std::cout << "Wrong input, exiting the program!" << std::endl;
+      std::cin.get();
+      return 0;
+    }
 
     return 0;
 }

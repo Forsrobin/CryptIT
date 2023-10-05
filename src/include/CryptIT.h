@@ -6,24 +6,25 @@
 #include <fstream>
 #include "FileManager.h"
 
-class CryptIT {
+class CryptIT
+{
 public:
-    FileManager fileManager;
-    
-    CryptIT();
-    ~CryptIT();
+  FileManager fileManager;
 
-    void setPassword();
-    void generateRSAKeys();
-    bool checkIfKeysExsist();
-    bool vildatePasswordWithPrivateKey();
+  CryptIT();
+  ~CryptIT();
 
-    std::string encrypt(std::string str);
-    std::string decrypt(std::string str);
+  void setPassword();
+  void generateRSAKeys();
+  bool checkIfKeysExsist();
+  bool vildatePasswordWithPrivateKey();
 
-    std::string getPassword();
+  void encrypt();
+  void decrypt();
+
+  std::string getPassword();
 
 private:
-    std::string password;
-    std::string keyPath;
+  std::string password;
+  std::string keyPath;
 };

@@ -12,11 +12,22 @@ FileManager::~FileManager()
 {
     // Clear the files vector
     files.clear();
+    // Delete the blacklist
+    delete &blacklist;
 }
 
 // Get files recursivly from the directory given
 std::vector<std::string> FileManager::getFilesRecursivly(const char* path)
 {
+    // Remove trailing "/" if there is one
+    if (path[strlen(path) - 1] == '/') {
+        char* newPath = (char*)malloc(strlen(path) - 1);
+        strncpy(newPath, path, strlen(path) - 1);
+        newPath[strlen(path) - 1] = '\0';
+        path = newPath;
+        free(newPath);
+    }
+
     // Create a pointer to the directory
     DIR* dirp = opendir(path);
     struct dirent * dp;
@@ -47,6 +58,15 @@ std::vector<std::string> FileManager::getFilesRecursivly(const char* path)
                 strcpy(newPath, path);
                 strcat(newPath, "/");
                 strcat(newPath, dp->d_name);
+
+                // Check if the directory is blacklisted
+                if (checkIfDirectoryIsBlacklisted(path) || checkIfFileIsBlacklisted(dp->d_name)) {
+                    // Free the memory
+                    free(newPath);
+                    // Continue
+                    continue;
+                }
+
                 // Add the file to the vector
                 files.push_back(newPath);
                 // Free the memory
@@ -121,4 +141,48 @@ void FileManager::deleteFile(const char* filename)
 {
     // Delete the file
     remove(filename);
+}
+
+// Check if a file is blacklisted
+bool FileManager::checkIfFileIsBlacklisted(const char* filename)
+{
+    // For each file in the blacklist
+    for (int i = 0; i < blacklist.files.size(); i++) {
+        // If the filename contains the file
+        if (strstr(filename, blacklist.files[i].c_str()) != NULL) {
+            // Return true
+            return true;
+        }
+    }
+    // Return false
+    return false;
+}
+
+// Check if directory is blacklisted
+bool FileManager::checkIfDirectoryIsBlacklisted(const char* path)
+{
+    // For each directory in the blacklist
+    for (int i = 0; i < blacklist.directories.size(); i++) {
+        // If the path contains the directory
+        if (strstr(path, blacklist.directories[i].c_str()) != NULL) {
+            // Return true
+            return true;
+        }
+    }
+    // Return false
+    return false;
+}
+
+// Get files
+std::vector<std::string> FileManager::getFiles()
+{
+    // Return the files vector
+    return files;
+}
+
+// Rename file
+void FileManager::renameFile(const char* oldname, const char* newname)
+{
+    // Rename the file
+    rename(oldname, newname);
 }
