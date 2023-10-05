@@ -40,8 +40,10 @@ std::string CryptIT::getPassword()
 // Generate rsa keys
 void CryptIT::generateRSAKeys()
 {
-  std::string private_key_command = "openssl genrsa -passout pass:"+ this->password +" -out "+this->keyPath+"private.key 4096";
-  std::string public_key_command = "openssl rsa -in "+this->keyPath+"private.key -outform PEM -pubout -out "+this->keyPath+"public.key";
+
+  // openssl genrsa -aes128 -passout pass:test -out ./.data/private.key 3072
+  std::string private_key_command = "openssl genrsa -aes128 -passout pass:"+ this->password +" -out "+this->keyPath+"private.key 3072";
+  std::string public_key_command = "openssl rsa -in "+this->keyPath+"private.key -outform PEM -pubout -passin pass:"+this->password+" -out "+this->keyPath+"public.key";
   // Create a new private and public key
   system(private_key_command.c_str());
   system(public_key_command.c_str());
@@ -93,12 +95,12 @@ bool CryptIT::vildatePasswordWithPrivateKey()
       // Check if the string contains the "RSA key ok" string
       if (str.find("RSA key ok") != std::string::npos) {
         // Remove the file
-        // fileManager.deleteFile(check_file.c_str());
+        fileManager.deleteFile(check_file.c_str());
         // Return true
         return true;
       } else {
         // Remove the file
-        // fileManager.deleteFile(check_file.c_str());
+        fileManager.deleteFile(check_file.c_str());
         // Return false
         return false;
       }
