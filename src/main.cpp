@@ -4,63 +4,69 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QtPlugin>
-#include <QFileDialog>
-#include <iostream>
-#include <QGraphicsTextItem>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QLabel>
+#include <QFileDialog>
+
+#include "encrypt.hpp"
+#include "decrypt.hpp"
 
 Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin);
 
 int main(int argc, char *argv[])
 {
-  // SDR sdr;
-  // std::vector<std::string> devices = sdr.getDevices();
-  std::vector<std::string> devices = {"Device 1", "Device 2", "Device 3"};
 
   QApplication app(argc, argv);
-
   QMainWindow mainWindow;
   QWidget *centralWidget = new QWidget(&mainWindow);
   mainWindow.setCentralWidget(centralWidget);
-
   QVBoxLayout *layout = new QVBoxLayout(centralWidget);
 
-  QComboBox *comboBox = new QComboBox();
-  for (int i = 0; i < devices.size(); ++i)
-  {
-    comboBox->addItem(QString::fromStdString(devices[i]));
-  }
+  // // Create a QT Widget that display the image from assets/logo.png using QGraphicsView
+  QGraphicsScene *scene = new QGraphicsScene();
+  QGraphicsView *view = new QGraphicsView(scene);
+  QPixmap image("assets/logo.png");
+  scene->addPixmap(image);
+  layout->addWidget(view);
 
-  layout->addWidget(comboBox);
-
-  //  Create a button to start the SDR
-  QPushButton *selectDir = new QPushButton("Select directory");
-  layout->addWidget(selectDir);
-
-  //  Create a button to start the SDR
-  QPushButton *startButton = new QPushButton("Start");
-  layout->addWidget(startButton);
-
-  // Creta a directory select button
+  // // Creta a directory select button
+  QPushButton *selectDir = new QPushButton("Select Directory", &mainWindow);
   QString dir;
   QLabel *label = new QLabel("Selected directory:");
   layout->addWidget(label);
+  layout->addWidget(selectDir);
 
-  // If the button is clicked, start the SDR
+  // // If the button is clicked, start the SDR
   QObject::connect(selectDir, &QPushButton::clicked, [&label, &dir]()
                    {
                      dir = QFileDialog::getExistingDirectory(NULL, "Open Directory", "/home", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
                      // Update the label with the selected directory
                      label->setText("Selected directory: " + dir); });
 
-  // If the button is clicked, start the SDR
-  QObject::connect(startButton, &QPushButton::clicked, [&dir, &comboBox]()
-                   { 
-                    std::cout << "Starting SDR with device: " << comboBox->currentText().toStdString() << std::endl; 
-                    std::cout << "Starting SDR with directory: " << dir.toStdString() << std::endl; });
+  // Tab related code
+  QTabWidget tabWidget;
+  EncryptionTab encryptionTab;
+  DecryptionTab decryptionTab;
 
-  mainWindow.setWindowTitle("Dropdown Example");
+  tabWidget.addTab(&encryptionTab, "Encrypt");
+  tabWidget.addTab(&decryptionTab, "Decrypt");
+
+
+  layout->addWidget(&tabWidget);
+  mainWindow.setWindowTitle("CryptIT");
+  mainWindow.resize(400, 300);
   mainWindow.show();
 
   return app.exec();
+
+  // // Creta a directory select button
+  // QString dir;
+  // QLabel *label = new QLabel("Selected directory:");
+  // layout->addWidget(label);
+
+  // mainWindow.setWindowTitle("Dropdown Example");
+  // mainWindow.show();
+
+  // return app.exec();
 }
