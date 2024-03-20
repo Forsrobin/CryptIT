@@ -1,0 +1,80 @@
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "conan",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/build/generators/conan_toolchain.cmake"
+      }
+    },
+    {
+      "name": "rel",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      },
+      "warnings": {
+        "unusedCli": false
+      }
+    },
+    {
+      "name": "deb",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTS": true,
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      }
+    },
+    {
+      "name": "vs2022",
+      "hidden": true,
+      "generator": "Visual Studio 17 2022",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS_INIT": "$env{CMAKE_CXX_FLAGS_INIT} $env{CMAKE_CXX_FLAGS} /W4 /WX /EHsc"
+      }
+    },
+    {
+      "name": "vs2022-rel",
+      "displayName": "Visual Studio 2022 Release",
+      "binaryDir": "${sourceDir}/build/vs2022-rel",
+      "inherits": [
+        "conan",
+        "vs2022",
+        "deb"
+      ],
+      "cacheVariables": {
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/vs2022-rel/install"
+      }
+    },
+    {
+      "name": "vs2022-deb",
+      "displayName": "Visual Studio 2022 Debug",
+      "binaryDir": "${sourceDir}/build/vs2022-deb",
+      "inherits": [
+        "conan",
+        "vs2022",
+        "rel"
+      ],
+      "cacheVariables": {
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/vs2022-deb/install"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "vs2022-rel",
+      "displayName": "Visual Studio 2022 Release Build",
+      "configurePreset": "vs2022-rel",
+      "configuration": "Release"
+    },
+    {
+      "name": "vs2022-deb",
+      "displayName": "Visual Studio 2022 Debug Build",
+      "configurePreset": "vs2022-deb",
+      "configuration": "Debug"
+    }
+  ]
+}
