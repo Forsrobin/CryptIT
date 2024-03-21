@@ -35,6 +35,8 @@ private:
   QTextEdit *fileDisplay = new QTextEdit();
   QLineEdit *passwordInput = new QLineEdit();
 
+  QLabel *messageDisplay = new QLabel();
+
 public:
   std::string directoryPath;
   std::vector<std::string> files;
@@ -57,6 +59,7 @@ public:
 
   void updateGUI()
   {
+
     // Update the number of files loaded in the directory
     numOfFiles->setText("Number of files loaded: " + QString::number(files.size()));
 
@@ -97,6 +100,9 @@ public:
 
   void loadGUI()
   {
+
+    layout->addWidget(messageDisplay);
+
     // ============================================================================
     // Create the button to select the directory
     QPushButton *loadFilesButton = new QPushButton("Load files", this);
@@ -133,14 +139,7 @@ public:
   {
 
     // Check if the passwordVerifyFile exists
-    if (checkIfFileExists(directoryPath + passwordVerifyFileName + ".enc"))
-    {
-      foundPasswordFile = true;
-    }
-    else
-    {
-      foundPasswordFile = false;
-    }
+    foundPasswordFile = checkIfFileExists(directoryPath + passwordVerifyFileName + ".enc");
 
     fs::path _dir = directoryPath;
     if (fs::exists(_dir) && fs::is_directory(_dir))
@@ -148,6 +147,7 @@ public:
       files.clear();
       loadInitFiles(_dir, files, passwordVerifyFileName);
       updateGUI();
+      messageDisplay->setText("");
     }
     else
     {
@@ -166,6 +166,8 @@ public:
     if (!checkIfFileExists(checkFile))
     {
       std::cerr << "Password verification file does not exist, select a directory that has been encrypted before!" << std::endl;
+      messageDisplay->setStyleSheet("QLabel { color : red; font-size: 14px;}");
+      messageDisplay->setText("Password verification file does not exist, select a directory that has been encrypted before!");
       return;
     }
 
@@ -173,6 +175,8 @@ public:
     if (!decryptFile(checkFile.c_str(), checkFileOut.c_str(), password.c_str()))
     {
       std::cerr << "Error decrypting checkfile: " << directoryPath << std::endl;
+      messageDisplay->setStyleSheet("QLabel { color : red; font-size: 14px;}");
+      messageDisplay->setText("Password verification failed, please enter the correct password!");
       deleteFile(checkFileOut);
       return;
     }
@@ -200,6 +204,9 @@ public:
         deleteFile(file);
       }
     }
+
+    messageDisplay->setStyleSheet("QLabel { color : green; font-size: 14px;}");
+    messageDisplay->setText("Successfully decrypted " + QString::number(files.size()) + " files");
 
     reset();
   }
@@ -244,6 +251,9 @@ public:
         deleteFile(file);
       }
     }
+
+    messageDisplay->setStyleSheet("QLabel { color : green; font-size: 14px;}");
+    messageDisplay->setText("Successfully encrypted " + QString::number(files.size()) + " files");
 
     reset();
   }
