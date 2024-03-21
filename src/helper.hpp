@@ -5,7 +5,7 @@
 
 namespace fs = std::filesystem;
 
-void countFiles(const fs::path &dirPath, std::vector<std::string> &files)
+void loadInitFiles(const fs::path &dirPath, std::vector<std::string> &files)
 {
   try
   {
@@ -17,7 +17,7 @@ void countFiles(const fs::path &dirPath, std::vector<std::string> &files)
       }
       else if (fs::is_directory(entry))
       {
-        countFiles(entry.path(), files); // Recursive call for subdirectory
+        loadInitFiles(entry.path(), files); // Recursive call for subdirectory
       }
     }
   }

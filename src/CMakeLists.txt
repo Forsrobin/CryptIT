@@ -3,7 +3,7 @@
 # ================================ #
 add_executable(${TARGET_NAME} main.cpp)
 
-target_link_libraries(${TARGET_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Platform Qt6::QWindowsIntegrationPlugin) 
+target_link_libraries(${TARGET_NAME} PRIVATE cryptopp::cryptopp Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Platform Qt6::QWindowsIntegrationPlugin) 
 
 install(TARGETS ${TARGET_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
 

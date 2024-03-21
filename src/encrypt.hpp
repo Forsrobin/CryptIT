@@ -6,6 +6,13 @@
 #include <QPushButton>
 #include <iostream>
 #include <filesystem>
+#include <QLabel>
+#include <QLineEdit>
+
+#include <fstream>
+
+#include <cryptopp/files.h>
+#include <cryptopp/default.h>
 
 #include "helper.hpp"
 
@@ -31,7 +38,8 @@ public:
     // Add the load file layout
   }
 
-  void reset() {
+  void reset()
+  {
     this->files.clear();
   }
 
@@ -46,6 +54,7 @@ public:
     connect(loadFilesButton, &QPushButton::clicked, this, &EncryptionTab::loadFiles);
 
     this->layout->addWidget(loadFilesButton);
+    this->layout->addLayout(this->loadFileLayout);
   }
 
   void loadFiles()
@@ -78,16 +87,26 @@ public:
 
     this->loadFileLayout->addWidget(textEdit);
 
+    // Create text input field to enter the password
+    // Create a label for the password field
+    QLabel *passwordLabel = new QLabel("Enter password: ", this);
+    this->loadFileLayout->addWidget(passwordLabel);
+
+    // Create a text input field for the password
+    QLineEdit *passwordInput = new QLineEdit(this);
+    passwordInput->setEchoMode(QLineEdit::Password);
+    this->loadFileLayout->addWidget(passwordInput);
+
     // Create a button to encrypt the files
     QPushButton *encryptButton = new QPushButton("Encrypt", this);
     connect(encryptButton, &QPushButton::clicked, this, &EncryptionTab::encryptFiles);
+
     if (files.size() == 0)
     {
       encryptButton->setDisabled(true);
     }
-    this->loadFileLayout->addWidget(encryptButton);
 
-    this->layout->addLayout(this->loadFileLayout);
+    this->loadFileLayout->addWidget(encryptButton);
   }
 
   void loadAllFiles()
@@ -96,7 +115,7 @@ public:
     if (fs::exists(_dir) && fs::is_directory(_dir))
     {
       files.clear();
-      countFiles(_dir, files);
+      loadInitFiles(_dir, files);
     }
     else
     {
@@ -106,6 +125,31 @@ public:
 
   void encryptFiles()
   {
+    // Get the password from the input field
+    QLineEdit *passwordInput = qobject_cast<QLineEdit *>(this->loadFileLayout->itemAt(3)->widget());
+    std::string password = passwordInput->text().toStdString();
+
     // Encrypt the files
+    for (const auto &file : files)
+    {
+      std::string outputFilePath = file + ".enc";
+
+      // Convert the file path to a char array
+      const char *file_ = file.c_str();
+      const char *outputFilePath_ = outputFilePath.c_str();
+      const char *password_ = password.c_str();
+
+      if (!encryptFile(file_, outputFilePath_, password_))
+      {
+        std::cerr << "Error encrypting file: " << file << std::endl;
+      }
+    }
+  }
+
+  bool encryptFile(const char *fin, const char *fout, const char *passwd)
+  {
+    CryptoPP::FileSource f(fin, true, new CryptoPP::DefaultEncryptor(passwd, new CryptoPP::FileSink(fout)));
+
+    return true;
   }
 };

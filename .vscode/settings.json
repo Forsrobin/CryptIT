@@ -86,7 +86,9 @@
     "qpushbutton": "cpp",
     "qpluginloader": "cpp",
     "qgraphicstextitem": "cpp",
-    "qpixmap": "cpp"
+    "qpixmap": "cpp",
+    "qlineedit": "cpp",
+    "fstream": "cpp"
   },
   "cmake.useCMakePresets": "always",
 }

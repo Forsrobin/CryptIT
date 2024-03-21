@@ -30,6 +30,11 @@ if (NOT Qt6_FOUND)
   message(FATAL_ERROR "Qt6 not found")
 endif (NOT Qt6_FOUND)
 
+find_package(cryptopp REQUIRED)
+if (NOT cryptopp_FOUND)
+  message(FATAL_ERROR "CryptoPP not found")
+endif (NOT cryptopp_FOUND)
+
 
 # ================================ #
 # === Create build targets ======= #
