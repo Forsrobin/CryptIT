@@ -9,8 +9,7 @@
 #include <QLabel>
 #include <QFileDialog>
 
-#include "encrypt.hpp"
-#include "decrypt.hpp"
+#include "crypto.hpp"
 
 Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin);
 
@@ -20,13 +19,12 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
   QMainWindow mainWindow;
   QWidget *centralWidget = new QWidget(&mainWindow);
+
   mainWindow.setCentralWidget(centralWidget);
 
   // Layouts
   QVBoxLayout *layout = new QVBoxLayout(centralWidget);
-  QTabWidget tabWidget;
-  EncryptionTab encryptionTab;
-  DecryptionTab decryptionTab;
+  Crypto cryptoSection;
 
   // // Create a QT Widget that display the image from assets/logo.png using QGraphicsView
   QGraphicsScene *scene = new QGraphicsScene();
@@ -40,19 +38,18 @@ int main(int argc, char *argv[])
   QLabel *label = new QLabel("");
 
   // // If the button is clicked, start the SDR
-  QObject::connect(selectDir, &QPushButton::clicked, [&label, &dir, &encryptionTab, &decryptionTab, &tabWidget, &layout]()
+  QObject::connect(selectDir, &QPushButton::clicked, [&layout, &label, &cryptoSection, &dir]()
                    {
                      dir = QFileDialog::getExistingDirectory(NULL, "Open Directory", "/home", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-                     encryptionTab.directoryPath = dir.toStdString();
-                     encryptionTab.reset();
+                     cryptoSection.directoryPath = dir.toStdString();
+                     cryptoSection.updateGUI();
                      label->setText("Selected directory: " + dir);
 
-                    //  decryptionTab.dir = dir.toStdString();
-                     // Update the label with the selected directory
-                     tabWidget.addTab(&encryptionTab, "Encrypt");
-                     tabWidget.addTab(&decryptionTab, "Decrypt");
-                     
-                     layout->addWidget(&tabWidget); });
+                     // If the cryptoSection has not been added to the layout, add it
+                     if (cryptoSection.parent() == nullptr)
+                     {
+                       layout->addWidget(&cryptoSection);
+                     } });
 
   // Add all the widgets to the layout
   layout->addWidget(view);
@@ -65,14 +62,4 @@ int main(int argc, char *argv[])
   mainWindow.show();
 
   return app.exec();
-
-  // // Creta a directory select button
-  // QString dir;
-  // QLabel *label = new QLabel("Selected directory:");
-  // layout->addWidget(label);
-
-  // mainWindow.setWindowTitle("Dropdown Example");
-  // mainWindow.show();
-
-  // return app.exec();
 }
