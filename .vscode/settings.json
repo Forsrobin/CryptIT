@@ -88,7 +88,9 @@
     "qgraphicstextitem": "cpp",
     "qpixmap": "cpp",
     "qlineedit": "cpp",
-    "fstream": "cpp"
+    "fstream": "cpp",
+    "queue": "cpp",
+    "ranges": "cpp"
   },
   "cmake.useCMakePresets": "always",
 }

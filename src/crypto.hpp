@@ -16,6 +16,7 @@
 #include <cryptopp/default.h>
 
 #include "helper.hpp"
+#include "threadpool.hpp"
 
 class Crypto : public QWidget
 {
@@ -40,6 +41,7 @@ private:
 public:
   std::string directoryPath;
   std::vector<std::string> files;
+  ThreadPool *pool = new ThreadPool(1);
 
   Crypto(QWidget *parent = nullptr) : QWidget(parent)
   {
@@ -114,8 +116,8 @@ public:
 
     // ============================================================================
     // Create the button to encrypt and decrypt the files
-    connect(encryptButton, &QPushButton::clicked, this, &Crypto::encryptFiles);
-    connect(decryptButton, &QPushButton::clicked, this, &Crypto::decryptFiles);
+    connect(encryptButton, &QPushButton::clicked, this, &Crypto::encrypt);
+    connect(decryptButton, &QPushButton::clicked, this, &Crypto::decrypt);
     encryptDecryptLayout->addWidget(encryptButton);
     encryptDecryptLayout->addWidget(decryptButton);
 
@@ -141,21 +143,157 @@ public:
     // Check if the passwordVerifyFile exists
     foundPasswordFile = checkIfFileExists(directoryPath + passwordVerifyFileName + ".enc");
 
+    // Reset the message label
+    messageDisplay->setText("");
+
     fs::path _dir = directoryPath;
-    if (fs::exists(_dir) && fs::is_directory(_dir))
-    {
-      files.clear();
-      loadInitFiles(_dir, files, passwordVerifyFileName);
-      updateGUI();
-      messageDisplay->setText("");
-    }
-    else
+    files.clear();
+    if (!fs::exists(_dir) && fs::is_directory(_dir))
     {
       std::cerr << "Invalid directory path or directory does not exist." << std::endl;
     }
+
+    loadInitFiles(_dir, files, passwordVerifyFileName);
+    updateGUI();
   }
 
-  void decryptFiles()
+  // ============================================================================
+  // Crypto functions
+  // ============================================================================
+  // ============================================================================
+  // Encrypt
+  // ============================================================================
+
+  static bool encryptFile(const char *fin, const char *fout, const char *passwd)
+  {
+    try
+    {
+      CryptoPP::FileSource f(fin, true, new CryptoPP::DefaultEncryptor(passwd, new CryptoPP::FileSink(fout)));
+      return true;
+    }
+    catch (const std::exception &e)
+    {
+      std::cerr << e.what() << '\n';
+      return false;
+    }
+  }
+
+  void encryptFiles(std::vector<std::string> &files_, const std::string &password)
+  {
+    for (const auto &file : files_)
+    {
+
+      // If the file has the .enc extension, skip it
+      if (file.size() >= 4 && file.substr(file.size() - 4) == ".enc")
+      {
+        continue;
+      }
+
+      std::string outputFilePath = file + ".enc";
+      if (!encryptFile(file.c_str(), outputFilePath.c_str(), password.c_str()))
+      {
+        std::cerr << "Error encrypting file: " << file << std::endl;
+      }
+      else
+      {
+        deleteFile(file);
+      }
+    }
+  }
+
+  void encrypt()
+  {
+    // Get the password from the input field
+    std::string password = passwordInput->text().toStdString();
+    std::string checkFile = directoryPath + passwordVerifyFileName;
+    std::string checkFileOut = directoryPath + passwordVerifyFileName + ".enc";
+
+    if (!checkIfFileExists(checkFile))
+    {
+      std::cerr << "Password verification file does not exist, creating one" << std::endl;
+      createPasswordVerificationFile(directoryPath, passwordVerifyFileName);
+      // Encrypt the file with the password
+      if (!Crypto::encryptFile(checkFile.c_str(), checkFileOut.c_str(), password.c_str()))
+      {
+        std::cerr << "Error encrypting file: " << checkFile << std::endl;
+        return;
+      }
+
+      deleteFile(checkFile);
+    }
+
+    encryptButton->setDisabled(true);
+
+    // If the number of threads is greater then the number of files, set the number of threads to the number of files
+    if (pool->getNumberOfThreads() > static_cast<int>(files.size()))
+      pool->setNumberOfThreads(static_cast<int>(files.size()));
+    std::vector<std::vector<std::string>> filesSplit = splitVector(files, pool->getNumberOfThreads());
+
+    // Start a timer so we can measure the time it takes to encrypt the files
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Add the files to the threadpool HERE
+    for (const auto &filesSubset : filesSplit)
+      pool->enqueue(&Crypto::encryptFiles, this, filesSubset, password);
+
+    // Wait for all threads to finish
+    pool->clear();
+    pool->resetThreads();
+
+    // Stop the timer
+    auto end = std::chrono::high_resolution_clock::now();
+
+    messageDisplay->setStyleSheet("QLabel { color : green; font-size: 14px;}");
+    auto minutes = std::chrono::duration_cast<std::chrono::minutes>(end - start).count();
+    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start).count() - minutes * 60;
+    messageDisplay->setText("Successfully encrypted " + QString::number(files.size()) + " files with " + QString::number(pool->getNumberOfThreads()) + " threads\nTime taken: " + QString::number(minutes) + " minutes and " + QString::number(seconds) + " seconds");
+
+    reset();
+  }
+
+  // ============================================================================
+  // Encrypt
+  // ============================================================================
+
+  bool decryptFile(const char *fin, const char *fout, const char *passwd)
+  {
+
+    try
+    {
+      CryptoPP::FileSource f(fin, true, new CryptoPP::DefaultDecryptor(passwd, new CryptoPP::FileSink(fout)));
+      return true;
+    }
+    catch (const std::exception &e)
+    {
+      std::cerr << e.what() << '\n';
+      return false;
+    }
+  }
+
+  void decryptFiles(std::vector<std::string> &files_, const std::string &password)
+  {
+    for (const auto &file : files_)
+    {
+      // If the file does not have the .enc extension, skip it
+      if (file.size() < 4 || file.substr(file.size() - 4) != ".enc")
+      {
+        continue;
+      }
+
+      // Remove the .enc extension
+      std::string outputFilePath = file.substr(0, file.size() - 4);
+      if (!decryptFile(file.c_str(), outputFilePath.c_str(), password.c_str()))
+      {
+        std::cerr << "Error decrypting file: " << file << std::endl;
+      }
+      else
+      {
+        deleteFile(file);
+      }
+    }
+  }
+
+  void decrypt()
   {
     // Get the password from the input field
     std::string password = passwordInput->text().toStdString();
@@ -185,98 +323,47 @@ public:
     deleteFile(checkFileOut);
     deleteFile(checkFile);
 
-    for (const auto &file : files)
-    {
-      // If the file does not have the .enc extension, skip it
-      if (file.size() < 4 || file.substr(file.size() - 4) != ".enc")
-      {
-        continue;
-      }
+    // Threadpool logic here
+    decryptButton->setDisabled(true);
 
-      // Remove the .enc extension
-      std::string outputFilePath = file.substr(0, file.size() - 4);
-      if (!decryptFile(file.c_str(), outputFilePath.c_str(), password.c_str()))
-      {
-        std::cerr << "Error decrypting file: " << file << std::endl;
-      }
-      else
-      {
-        deleteFile(file);
-      }
-    }
+    // If the number of threads is greater then the number of files, set the number of threads to the number of files
+    if (pool->getNumberOfThreads() > static_cast<int>(files.size()))
+      pool->setNumberOfThreads(static_cast<int>(files.size()));
+    std::vector<std::vector<std::string>> filesSplit = splitVector(files, pool->getNumberOfThreads());
+
+    // Start a timer so we can measure the time it takes to encrypt the files
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // Add the files to the threadpool HERE
+    for (const auto &filesSubset : filesSplit)
+      pool->enqueue(&Crypto::decryptFiles, this, filesSubset, password);
+
+    // Wait for all threads to finish
+    pool->clear();
+    pool->resetThreads();
+
+    // Stop the timer
+    auto end = std::chrono::high_resolution_clock::now();
 
     messageDisplay->setStyleSheet("QLabel { color : green; font-size: 14px;}");
-    messageDisplay->setText("Successfully decrypted " + QString::number(files.size()) + " files");
+    auto minutes = std::chrono::duration_cast<std::chrono::minutes>(end - start).count();
+    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(end - start).count() - minutes * 60;
+    messageDisplay->setText("Successfully decrypted " + QString::number(files.size()) + " files with " + QString::number(pool->getNumberOfThreads()) + " threads\nTime taken: " + QString::number(minutes) + " minutes and " + QString::number(seconds) + " seconds");
 
     reset();
   }
 
-  void encryptFiles()
+  std::vector<std::vector<std::string>> splitVector(const std::vector<std::string> &_files, int numberOfThreads)
   {
-    // Get the password from the input field
-    std::string password = passwordInput->text().toStdString();
-    std::string checkFile = directoryPath + passwordVerifyFileName;
-    std::string checkFileOut = directoryPath + passwordVerifyFileName + ".enc";
+    std::vector<std::vector<std::string>> filesSplit(numberOfThreads);
 
-    if (!checkIfFileExists(checkFile))
+    int i = 0;
+    for (const auto &file : _files)
     {
-      std::cerr << "Password verification file does not exist, creating one" << std::endl;
-      createPasswordVerificationFile(directoryPath, passwordVerifyFileName);
-      // Encrypt the file with the password
-      if (!encryptFile(checkFile.c_str(), checkFileOut.c_str(), password.c_str()))
-      {
-        std::cerr << "Error encrypting file: " << checkFile << std::endl;
-        return;
-      }
-
-      deleteFile(checkFile);
+      filesSplit[i % numberOfThreads].push_back(file);
+      i++;
     }
 
-    for (const auto &file : files)
-    {
-
-      // If the file has the .enc extension, skip it
-      if (file.size() >= 4 && file.substr(file.size() - 4) == ".enc")
-      {
-        continue;
-      }
-
-      std::string outputFilePath = file + ".enc";
-      if (!encryptFile(file.c_str(), outputFilePath.c_str(), password.c_str()))
-      {
-        std::cerr << "Error encrypting file: " << file << std::endl;
-      }
-      else
-      {
-        deleteFile(file);
-      }
-    }
-
-    messageDisplay->setStyleSheet("QLabel { color : green; font-size: 14px;}");
-    messageDisplay->setText("Successfully encrypted " + QString::number(files.size()) + " files");
-
-    reset();
-  }
-
-  bool encryptFile(const char *fin, const char *fout, const char *passwd)
-  {
-    CryptoPP::FileSource f(fin, true, new CryptoPP::DefaultEncryptor(passwd, new CryptoPP::FileSink(fout)));
-
-    return true;
-  }
-
-  bool decryptFile(const char *fin, const char *fout, const char *passwd)
-  {
-
-    try
-    {
-      CryptoPP::FileSource f(fin, true, new CryptoPP::DefaultDecryptor(passwd, new CryptoPP::FileSink(fout)));
-      return true;
-    }
-    catch (const std::exception &e)
-    {
-      std::cerr << e.what() << '\n';
-      return false;
-    }
+    return filesSplit;
   }
 };

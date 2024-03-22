@@ -1,4 +1,5 @@
 #include <iostream>
+#include <thread>
 #include <vector>
 #include <string>
 #include <filesystem>
@@ -15,7 +16,7 @@ void loadInitFiles(const fs::path &dirPath, std::vector<std::string> &files, con
       {
         // Get only the filename, not the full path
         const std::string filename = "/" + entry.path().filename().string();
-        
+
         if (filename != passwordVerifyFileName && filename != passwordVerifyFileName + ".enc")
         {
           files.push_back(entry.path().string());
@@ -75,4 +76,9 @@ bool verifyDecryptionPassword(const std::string &checkFile)
 bool checkIfFileExists(const std::string &filePath)
 {
   return fs::exists(filePath);
+}
+
+int getNumberOfCores()
+{
+  return std::thread::hardware_concurrency();
 }

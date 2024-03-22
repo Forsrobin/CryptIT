@@ -13,7 +13,8 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
-        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+        "CMAKE_EXE_LINKER_FLAGS_INIT": "$env{CMAKE_EXE_LINKER_FLAGS_INIT} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup" 
       },
       "warnings": {
         "unusedCli": false
@@ -43,7 +44,7 @@
       "inherits": [
         "conan",
         "vs2022",
-        "deb"
+        "rel"
       ],
       "cacheVariables": {
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/vs2022-rel/install"
@@ -56,7 +57,7 @@
       "inherits": [
         "conan",
         "vs2022",
-        "rel"
+        "deb"
       ],
       "cacheVariables": {
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/vs2022-deb/install"
