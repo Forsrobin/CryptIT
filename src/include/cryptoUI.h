@@ -39,16 +39,7 @@ private:
   QLabel *messageDisplay = new QLabel();
 
 public:
-  CryptoUI(QWidget *parent = nullptr) : QWidget(parent)
-  {
-    loadGUI();
-    updateGUI();
-
-    // Create the layout structure
-    setLayout(layout);
-    layout->addLayout(encryptDecryptLayout);
-  }
-
+  CryptoUI(QWidget *parent = nullptr);
   void reset();
   void updateGUI();
   void loadGUI();

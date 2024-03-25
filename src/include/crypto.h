@@ -17,9 +17,10 @@ class Crypto
 {
 
 private:
-  std::string passwordVerifyFileName = "/.jghdf78tdshui4bjdfy78";
-  bool foundPasswordFile = false;
+  std::string passwordVerifyFileName = ".jghdf78tdshui4bjdfy78";
   std::string totalTime = "";
+  std::string errorMessage = "";
+  bool foundPasswordFile = false;
 
 
 public:
@@ -44,6 +45,7 @@ public:
   bool foundPasswordFileInDirectory();
 
   std::string getTotalTimeMessage();
+  std::string getErrorMessage();
 };
 
 #endif // CRYPTIT_CRYPTO_H

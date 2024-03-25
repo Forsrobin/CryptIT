@@ -10,9 +10,8 @@ void Helper::loadInitFiles(const fs::path &dirPath, std::vector<std::string> &fi
       if (fs::is_regular_file(entry))
       {
         // Get only the filename, not the full path
-        const std::string filename = "/" + entry.path().filename().string();
-
-        if (filename != passwordVerifyFileName && filename != passwordVerifyFileName + ".enc")
+        const std::string relativeFile = dirPath.string() + entry.path().string().substr(dirPath.string().length());
+        if (relativeFile != dirPath.string() + passwordVerifyFileName && relativeFile != dirPath.string() + passwordVerifyFileName + ".enc")
         {
           files.push_back(entry.path().string());
         }
@@ -78,7 +77,8 @@ int Helper::getNumberOfCores()
   return std::thread::hardware_concurrency();
 }
 
-std::string Helper::generateRandomFile(std::string dirPath) {
+std::string Helper::generateRandomFile(std::string dirPath)
+{
   std::string filename = "test" + std::to_string(rand() % 1000) + ".txt";
   std::ofstream file(dirPath + filename);
   // If the directory does not exist, create it
@@ -86,7 +86,7 @@ std::string Helper::generateRandomFile(std::string dirPath) {
   {
     Helper::createDirectory(dirPath);
   }
-  
+
   if (file.is_open())
   {
     file << "test";
@@ -107,4 +107,21 @@ bool Helper::createDirectory(const std::string &dirPath)
     return true;
   }
   return false;
+}
+
+void Helper::deleteDirectory(const std::string &dirPath)
+{
+  if (fs::exists(dirPath))
+  {
+    fs::remove_all(dirPath);
+  }
+  else
+  {
+    std::cerr << "Directory does not exist" << std::endl;
+  }
+}
+
+bool Helper::checkIfDirectoryExists(const std::string &dirPath)
+{
+  return fs::exists(dirPath);
 }

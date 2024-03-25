@@ -15,7 +15,7 @@
 
 Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin);
 
-// Disable the console window on Windows
+// Disable the console window on Windows if the application is build as a GUI application
 // #ifdef _WIN32
 // #include <windows.h>
 // #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
   QObject::connect(selectDir, &QPushButton::clicked, [&layout, &label, &cryptoSection, &dir]()
                    {
                      dir = QFileDialog::getExistingDirectory(NULL, "Open Directory", "/home", QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-                     cryptoSection.directoryPath = dir.toStdString();
+                     cryptoSection.directoryPath = dir.toStdString() + "/";
                      cryptoSection.updateGUI();
                      label->setText("Selected directory: " + dir);
 

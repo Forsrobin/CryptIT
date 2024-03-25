@@ -1,14 +1,14 @@
 #include "include/cryptoUI.h"
 
-// CryptoUI::CryptoUI(QWidget *parent) : QWidget(parent)
-// {
-//   loadGUI();
-//   updateGUI();
+CryptoUI::CryptoUI(QWidget *parent) : QWidget(parent)
+{
+  loadGUI();
+  updateGUI();
 
-//   // Create the layout structure
-//   setLayout(layout);
-//   layout->addLayout(encryptDecryptLayout);
-// }
+  // Create the layout structure
+  setLayout(layout);
+  layout->addLayout(encryptDecryptLayout);
+}
 
 void CryptoUI::reset()
 {
@@ -90,6 +90,12 @@ void CryptoUI::loadGUI()
             decrypt(passwordInput->text().toStdString());
             messageDisplay->setStyleSheet("QLabel { color : green; }");
             messageDisplay->setText("Total time: " + QString::fromStdString(getTotalTimeMessage()));
+
+            if(this->getErrorMessage() != ""){
+              messageDisplay->setStyleSheet("QLabel { color : red; }");
+              messageDisplay->setText(QString::fromStdString(this->getErrorMessage()));
+            }
+
             reset(); });
 
   encryptDecryptLayout->addWidget(encryptButton);

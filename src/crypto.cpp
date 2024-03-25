@@ -155,6 +155,8 @@ void Crypto::decryptFiles(std::vector<std::string> &files_, const std::string &p
 
 void Crypto::decrypt(std::string password)
 {
+  errorMessage = "";
+
   // Get the password from the input field
   std::string checkFile = directoryPath + passwordVerifyFileName + ".enc";
   std::string checkFileOut = directoryPath + passwordVerifyFileName;
@@ -171,6 +173,7 @@ void Crypto::decrypt(std::string password)
   {
     std::cerr << "Error decrypting checkfile: " << directoryPath << std::endl;
     Helper::deleteFile(checkFileOut);
+    errorMessage = "Wrong password! Please try again";
     return;
   }
 
@@ -225,4 +228,9 @@ std::string Crypto::getTotalTimeMessage()
 {
   
   return totalTime;
+}
+
+std::string Crypto::getErrorMessage()
+{
+  return errorMessage;
 }
