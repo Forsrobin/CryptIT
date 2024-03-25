@@ -9,15 +9,17 @@
 #include <QLabel>
 #include <QFileDialog>
 
-#include "include/crypto.h"
+#include <iostream>
+
+#include "cryptoUI.h"
 
 Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin);
 
 // Disable the console window on Windows
-#ifdef _WIN32
-#include <windows.h>
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
-#endif
+// #ifdef _WIN32
+// #include <windows.h>
+// #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+// #endif
 
 int main(int argc, char *argv[])
 {
@@ -30,7 +32,7 @@ int main(int argc, char *argv[])
 
   // Layouts
   QVBoxLayout *layout = new QVBoxLayout(centralWidget);
-  Crypto cryptoSection;
+  CryptoUI cryptoSection;
 
   // // Create a QT Widget that display the image from assets/logo.png using QGraphicsView
   QGraphicsScene *scene = new QGraphicsScene();
@@ -46,7 +48,7 @@ int main(int argc, char *argv[])
   QLabel *label = new QLabel("");
 
   // Create a dropdown menu to select the number of threads
-  int numberOfCores = getNumberOfCores();
+  int numberOfCores = Helper::getNumberOfCores();
   QLabel *threadsLabel = new QLabel("Select number of threads");
   QComboBox *threads = new QComboBox(&mainWindow);
   for (int i = 1; i <= numberOfCores; i++)
@@ -59,8 +61,7 @@ int main(int argc, char *argv[])
                    { 
                     
                     // If no pool has been created, create one
-                      cryptoSection.pool = new ThreadPool(threads->currentText().toInt()); 
-                    });
+                      cryptoSection.pool = new ThreadPool(threads->currentText().toInt()); });
 
   // // If the button is clicked, start the SDR
   QObject::connect(selectDir, &QPushButton::clicked, [&layout, &label, &cryptoSection, &dir]()

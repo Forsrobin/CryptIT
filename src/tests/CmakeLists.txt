@@ -1,8 +1,9 @@
-add_executable(hellow-world-test
+add_executable(crypt-it-test
         test_main.cc
+        ../helper.cpp
         )
 
-target_link_libraries(hellow-world-test
+target_link_libraries(crypt-it-test
         cryptopp::cryptopp 
         Qt6::Core 
         Qt6::Gui 
@@ -12,7 +13,7 @@ target_link_libraries(hellow-world-test
         gtest::gtest
         )
 
-add_test(NAME hellow-world-test
+add_test(NAME crypt-it-test
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin
-        COMMAND hellow-world-test
+        COMMAND crypt-it-test
         )

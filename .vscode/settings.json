@@ -92,7 +92,8 @@
     "queue": "cpp",
     "ranges": "cpp",
     "any": "cpp",
-    "set": "cpp"
+    "set": "cpp",
+    "qapplication": "cpp"
   },
   "cmake.useCMakePresets": "always",
 }

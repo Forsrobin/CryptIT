@@ -1,34 +1,33 @@
 #include <gtest/gtest.h>
-#include "../include/crypto.h"
-#include "../include/helper.h"
+#include "crypto.h"
 
 TEST(HelperTest, passwordVerificationFileTest)
 {
 
-  createPasswordVerificationFile("./", "test.txt");
+  Helper::createPasswordVerificationFile("./", "test.txt");
 
-  ASSERT_EQ(true, verifyDecryptionPassword("./test.txt"));
-  ASSERT_EQ(false, verifyDecryptionPassword("./test1.txt"));
+  ASSERT_EQ(true, Helper::verifyDecryptionPassword("./test.txt"));
+  ASSERT_EQ(false, Helper::verifyDecryptionPassword("./test1.txt"));
 }
 
 TEST(HelperTest, fileCheckTest)
 {
 
-  bool file_check = checkIfFileExists("./test.txt");
+  bool file_check = Helper::checkIfFileExists("./test.txt");
 
   ASSERT_EQ(true, file_check);
 
   // Delete the file
-  deleteFile("./test.txt");
+  Helper::deleteFile("./test.txt");
 
-  file_check = checkIfFileExists("./test.txt");
+  file_check = Helper::checkIfFileExists("./test.txt");
 
   ASSERT_EQ(false, file_check);
 }
 
 TEST(HelperTest, coreTest)
 {
-  const int numberOfCores = getNumberOfCores();
+  const int numberOfCores = Helper::getNumberOfCores();
 
   ASSERT_EQ(true, numberOfCores > 0);
 }

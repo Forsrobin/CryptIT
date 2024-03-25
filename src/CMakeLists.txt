@@ -3,7 +3,8 @@
 # ================================ #
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_executable(${TARGET_NAME} main.cpp)
+file(GLOB SOURCES "./*.cpp")
+add_executable(${TARGET_NAME} ${SOURCES})
 
 target_link_libraries(${TARGET_NAME} PRIVATE 
     cryptopp::cryptopp 

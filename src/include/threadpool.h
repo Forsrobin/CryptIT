@@ -1,3 +1,6 @@
+#ifndef CRYPTIT_THREADPOOL_H
+#define CRYPTIT_THREADPOOL_H
+
 #include <thread>
 #include <vector>
 #include <functional>
@@ -5,6 +8,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <future>
+#include <iostream>
 
 class ThreadPool
 {
@@ -116,3 +120,5 @@ private:
   int nThreads;
   bool stop;
 };
+
+#endif //CRYPTIT_THREADPOOL_H
