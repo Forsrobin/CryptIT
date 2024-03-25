@@ -11,6 +11,6 @@ target_link_libraries(crypt-it-test
         )
 
 add_test(NAME crypt-it-test
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/src/tests/Debug
         COMMAND crypt-it-test
         )
