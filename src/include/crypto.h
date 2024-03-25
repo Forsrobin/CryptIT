@@ -15,8 +15,8 @@
 #include <cryptopp/files.h>
 #include <cryptopp/default.h>
 
-#include "helper.hpp"
-#include "threadpool.hpp"
+#include "helper.h"
+#include "threadpool.h"
 
 class Crypto : public QWidget
 {
@@ -159,7 +159,6 @@ public:
 
   // ============================================================================
   // Crypto functions
-  // ============================================================================
   // ============================================================================
   // Encrypt
   // ============================================================================

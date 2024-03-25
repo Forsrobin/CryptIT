@@ -12,12 +12,10 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN On)
 
 set(TARGET_NAME ${PROJECT_NAME})
 
-# ================================ #
-# === Set up build environment === #
-# ================================ #
 if (BUILD_TESTS)
+    # Print out the build type
+    message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
     enable_testing()
-    add_subdirectory(tests)
 endif ()
 
 # ================================ #
@@ -25,7 +23,6 @@ endif ()
 # ================================ #
 # Modules that need's to be in root (Local projects)
 find_package(Qt6 REQUIRED)
-
 if (NOT Qt6_FOUND)
   message(FATAL_ERROR "Qt6 not found")
 endif (NOT Qt6_FOUND)
@@ -34,6 +31,11 @@ find_package(cryptopp REQUIRED)
 if (NOT cryptopp_FOUND)
   message(FATAL_ERROR "CryptoPP not found")
 endif (NOT cryptopp_FOUND)
+
+find_package(GTest)
+if (NOT GTest_FOUND)
+  message(FATAL_ERROR "GTest not found")
+endif (NOT GTest_FOUND)
 
 
 # ================================ #

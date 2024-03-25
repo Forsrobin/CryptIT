@@ -9,7 +9,7 @@
 #include <QLabel>
 #include <QFileDialog>
 
-#include "crypto.hpp"
+#include "include/crypto.h"
 
 Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin);
 
@@ -35,7 +35,9 @@ int main(int argc, char *argv[])
   // // Create a QT Widget that display the image from assets/logo.png using QGraphicsView
   QGraphicsScene *scene = new QGraphicsScene();
   QGraphicsView *view = new QGraphicsView(scene);
-  QPixmap image("assets/logo.png");
+  // Get the relativ path from the executable to the logo.png
+  std::string path = std::string(argv[0]);
+  QPixmap image(QString::fromStdString(path.substr(0, path.find_last_of("\\")) + "\\assets\\logo.png"));
   scene->addPixmap(image);
 
   // // Creta a directory select button

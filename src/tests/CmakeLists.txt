@@ -1,0 +1,18 @@
+add_executable(hellow-world-test
+        test_main.cc
+        )
+
+target_link_libraries(hellow-world-test
+        cryptopp::cryptopp 
+        Qt6::Core 
+        Qt6::Gui 
+        Qt6::Widgets 
+        Qt6::Platform 
+        Qt6::QWindowsIntegrationPlugin
+        gtest::gtest
+        )
+
+add_test(NAME hellow-world-test
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+        COMMAND hellow-world-test
+        )

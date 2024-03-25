@@ -1,3 +1,6 @@
+#ifndef CRYPTIT_HELPER_H
+#define CRYPTIT_HELPER_H
+
 #include <iostream>
 #include <thread>
 #include <vector>
@@ -82,3 +85,5 @@ int getNumberOfCores()
 {
   return std::thread::hardware_concurrency();
 }
+
+#endif //CRYPTIT_HELPER_H

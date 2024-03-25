@@ -90,7 +90,9 @@
     "qlineedit": "cpp",
     "fstream": "cpp",
     "queue": "cpp",
-    "ranges": "cpp"
+    "ranges": "cpp",
+    "any": "cpp",
+    "set": "cpp"
   },
   "cmake.useCMakePresets": "always",
 }
