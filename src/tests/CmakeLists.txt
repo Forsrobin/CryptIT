@@ -1,15 +1,12 @@
 add_executable(crypt-it-test
-        test_main.cc
+        crypto_test.cc
+        helper_test.cc
+        ../crypto.cpp
         ../helper.cpp
         )
 
 target_link_libraries(crypt-it-test
         cryptopp::cryptopp 
-        Qt6::Core 
-        Qt6::Gui 
-        Qt6::Widgets 
-        Qt6::Platform 
-        Qt6::QWindowsIntegrationPlugin
         gtest::gtest
         )
 

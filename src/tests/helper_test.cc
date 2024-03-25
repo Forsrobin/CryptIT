@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "crypto.h"
+#include "helper.h"
 
 TEST(HelperTest, passwordVerificationFileTest)
 {

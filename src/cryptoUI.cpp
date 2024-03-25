@@ -78,8 +78,6 @@ void CryptoUI::loadGUI()
 
   // ============================================================================
   // Create the button to encrypt and decrypt the files
-  // void Crypto::encrypt(std::string password)
-  // Create a connection when you click the button that runs the encrypt function with the password from the input field
   connect(encryptButton, &QPushButton::clicked, [this]()
           {
             encrypt(passwordInput->text().toStdString());

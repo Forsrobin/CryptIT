@@ -19,7 +19,7 @@ void Helper::loadInitFiles(const fs::path &dirPath, std::vector<std::string> &fi
       }
       else if (fs::is_directory(entry))
       {
-        loadInitFiles(entry.path(), files, passwordVerifyFileName); // Recursive call for subdirectory
+        Helper::loadInitFiles(entry.path(), files, passwordVerifyFileName); // Recursive call for subdirectory
       }
     }
   }
@@ -76,4 +76,35 @@ bool Helper::checkIfFileExists(const std::string &filePath)
 int Helper::getNumberOfCores()
 {
   return std::thread::hardware_concurrency();
+}
+
+std::string Helper::generateRandomFile(std::string dirPath) {
+  std::string filename = "test" + std::to_string(rand() % 1000) + ".txt";
+  std::ofstream file(dirPath + filename);
+  // If the directory does not exist, create it
+  if (!fs::exists(dirPath))
+  {
+    Helper::createDirectory(dirPath);
+  }
+  
+  if (file.is_open())
+  {
+    file << "test";
+    file.close();
+  }
+  else
+  {
+    std::cerr << "Error creating password verification file" << std::endl;
+  }
+  return filename;
+}
+
+bool Helper::createDirectory(const std::string &dirPath)
+{
+  if (!fs::exists(dirPath))
+  {
+    fs::create_directory(dirPath);
+    return true;
+  }
+  return false;
 }
