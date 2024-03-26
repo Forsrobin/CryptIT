@@ -77,13 +77,5 @@
       "configurePreset": "vs2022-deb",
       "configuration": "Debug"
     }
-  ],
-  "testPresets": [
-    {
-      "name": "vs2022-deb",
-      "displayName": "Visual Studio 2022 Debug Test",
-      "configurePreset": "vs2022-deb",
-      "configuration": "Debug"
-    }
   ]
 }
