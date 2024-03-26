@@ -27,17 +27,17 @@ jobs:
         build_type: [Debug]
         c_compiler: [gcc, clang, cl]
         include:
-          # - os: windows-latest
-          #   c_compiler: cl
-          #   cpp_compiler: cl
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
         exclude:
-          # - os: windows-latest
-          #   c_compiler: gcc
-          # - os: windows-latest
-          #   c_compiler: clang
+          - os: windows-latest
+            c_compiler: gcc
+          - os: windows-latest
+            c_compiler: clang
           - os: ubuntu-latest
             c_compiler: cl
           - os: ubuntu-latest
@@ -47,17 +47,17 @@ jobs:
 
 
       # Ubuntu related steps
-    - name: Check so clang++ is installed
+    - name: Export CXX
       if: matrix.os == 'ubuntu-latest'
-      run: clang++ --version
+      run: export CXX=${{ matrix.cpp_compiler }}
 
-    - name: Install clang and clang++
+    - name: Add clang++ to the path
       if: matrix.os == 'ubuntu-latest'
-      run: sudo apt-get update && sudo apt-get install clang clang++
-    
-    - name: Check so clang++ is installed
-      if: matrix.os == 'ubuntu-latest'
-      run: clang++ --version
+      run: |
+        if [ "${{ matrix.cpp_compiler }}" == "clang++" ]; then
+          sudo apt-get install -y clang
+          export PATH="/usr/bin:$PATH"
+        fi
 
     - name: Free Disk Space (Ubuntu)
       if: matrix.os == 'ubuntu-latest'
