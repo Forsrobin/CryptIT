@@ -59,7 +59,13 @@ jobs:
         docker-images: true
         swap-storage: true
       
-
+      # If the os is Ubuntu, run this action to free up disk space.
+    - name: Install clang and clang++
+      if: matrix.os == 'ubuntu-latest'
+      run: sudo apt-get install clang clang++
+    
+    - name: Check so clang++ is installed
+      run: clang++ --version
 
     - name: Get Conan
       uses: turtlebrowser/get-conan@main
