@@ -16,7 +16,6 @@ else()
     message(FATAL_ERROR "Unsupported platform, currently we are only supporting MacOS / Windows")
 endif()
 
-
 target_link_libraries(${TARGET_NAME} PRIVATE 
     cryptopp::cryptopp 
     Qt6::Core 
