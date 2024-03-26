@@ -22,7 +22,7 @@ os=Linux
 tools.system.package_manager:mode=install
 tools.system.package_manager:sudo=True" > ~/.conan/profiles/$1
 
-    echo "Checking the content of the profile file: ~/.conan/profiles/ubuntu"
+    echo "Checking the content of the profile file: ~/.conan/profiles/$1"
     cat ~/.conan/profiles/ubuntu
 
 fi
