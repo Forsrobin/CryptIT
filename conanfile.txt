@@ -1,5 +1,7 @@
 [requires]
+qt/6.6.2
 cryptopp/8.9.0
+gtest/1.14.0
 
 [generators]
 CMakeDeps
