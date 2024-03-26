@@ -51,11 +51,17 @@ jobs:
     - name: Create default profile
       run: conan profile detect --force
 
-    - name: Install machine dependencies
-      run: bash install.sh ${{ matrix.os }}
+    - name: Create conan profile
+      run: bash setup.sh ${{ matrix.os }}
+    
+    - name: List conan profiles
+      run: conan profile list
+
+    # - name: Install machine dependencies
+    #   run: bash install.sh ${{ matrix.os }}
 
     - name: Install dependencies
-      run: conan install . --build=missing -s build_type=${{ matrix.build_type }}
+      run: sudo conan install . --build=missing --profile=${{ matrix.os }} -s build_type=${{ matrix.build_type }}
       
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
