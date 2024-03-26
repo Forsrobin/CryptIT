@@ -20,9 +20,13 @@ os=Linux
 
 [conf]
 tools.system.package_manager:mode=install
-tools.system.package_manager:sudo=True" > ~/.conan/profiles/$1
+tools.system.package_manager:sudo=True" > ~/.conan2/profiles/$1
 
-    echo "Checking the content of the profile file: ~/.conan/profiles/$1"
-    cat ~/.conan/profiles/$1
+    ls -la ~/
+    ls -la ~/.conan2/
+    ls -la ~/.conan2/profiles/
+    
+    echo "Checking the content of the profile file: ~/.conan2/profiles/$1"
+    cat ~/.conan2/profiles/$1
 
 fi
