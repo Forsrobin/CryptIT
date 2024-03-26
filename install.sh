@@ -30,5 +30,9 @@ if [ $1 == "ubuntu-latest" ]; then
     sudo apt-get install -y libxau-dev
     echo "Installing libxaw7-dev"
     sudo apt-get install -y libxaw7-dev
+    echo "Installing libxcomposite-dev"
+    sudo apt-get install -y libc6-dev
+    echo "Installing libxext-dev"
+    sudo apt-get install libc++-dev
     
 fi
