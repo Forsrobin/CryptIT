@@ -18,8 +18,8 @@ compiler.version=11
 os=Linux
 
 [env]
-CC=/usr/bin/clang
-CXX=/usr/bin/clang++
+*:CC=/usr/bin/clang
+*:CXX=/usr/bin/clang++
 
 [conf]
 tools.system.package_manager:mode=install
