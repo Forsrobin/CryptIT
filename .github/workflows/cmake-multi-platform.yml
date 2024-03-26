@@ -4,9 +4,9 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "ci" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "ci" ]
 
 jobs:
   build:
@@ -61,7 +61,7 @@ jobs:
     #   run: bash install.sh ${{ matrix.os }}
 
     - name: Install dependencies
-      run: sudo conan install . --build=missing --profile=${{ matrix.os }} -s build_type=${{ matrix.build_type }}
+      run: conan install . --build=missing --profile=${{ matrix.os }} -s build_type=${{ matrix.build_type }}
       
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
