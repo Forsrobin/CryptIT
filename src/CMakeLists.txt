@@ -6,14 +6,19 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB SOURCES "./*.cpp")
 
 # Add icons
-include(${CMAKE_SOURCE_DIR}/AddIconToBinary.cmake)
+include(${CMAKE_SOURCE_DIR}/src/AddIconToBinary.cmake)
 AddIconToBinary(SOURCE_FILES ICONS ${CMAKE_SOURCE_DIR}/src/assets/icon.ico ${CMAKE_SOURCE_DIR}/src/assets/icon.icns)
 if (MSVC)
+    message(BUDLING_FOR "Building for Windows")
     add_executable(${TARGET_NAME} WIN32 ${SOURCES} ${SOURCE_FILES} ${HEADERS})
 elseif(APPLE)
+    message(BUDLING_FOR "Building for MacOS")
     add_executable(${TARGET_NAME} MACOSX_BUNDLE ${SOURCES} ${SOURCE_FILES} ${HEADERS})
+elseif(UNIX)
+    message(BUDLING_FOR "Building for Unix")
+    add_executable(${TARGET_NAME} UNIX ${SOURCES} ${SOURCE_FILES} ${HEADERS})
 else()
-    message(FATAL_ERROR "Unsupported platform, currently we are only supporting MacOS / Windows")
+    message(FATAL_ERROR "Unsupported platform, currently we are only supporting MacOS / Unix / Windows")
 endif()
 
 target_link_libraries(${TARGET_NAME} PRIVATE 
