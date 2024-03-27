@@ -1,4 +1,4 @@
-name: Debug build and Test
+name: Build, test and cache results
 
 on:
   push:
@@ -107,8 +107,8 @@ jobs:
       run: ctest --test-dir ${{ steps.strings.outputs.build-output-dir }}/src/tests/ -C ${{ matrix.build_type }}
 
     - name: Cache results
-      id: cache-primes
+      id: cache-build
       uses: actions/cache@v4
       with:
         path: ${{ steps.strings.outputs.build-output-dir }}/src
-        key: ${{ matrix.os }}-${{ matrix.build_type }}-primes
+        key: ${{ matrix.os }}-${{ matrix.build_type }}-build
