@@ -13,6 +13,7 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
+        "BUILD_TESTS": true,
         "CMAKE_EXPORT_COMPILE_COMMANDS": true,
         "CMAKE_EXE_LINKER_FLAGS_INIT": "$env{CMAKE_EXE_LINKER_FLAGS_INIT} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup" 
       },
@@ -74,14 +75,6 @@
     {
       "name": "vs2022-deb",
       "displayName": "Visual Studio 2022 Debug Build",
-      "configurePreset": "vs2022-deb",
-      "configuration": "Debug"
-    }
-  ],
-  "testPresets": [
-    {
-      "name": "vs2022-deb",
-      "displayName": "Visual Studio 2022 Debug Test",
       "configurePreset": "vs2022-deb",
       "configuration": "Debug"
     }

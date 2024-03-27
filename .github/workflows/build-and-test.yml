@@ -1,0 +1,112 @@
+name: Build, test and cache results
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        build_type: [Debug, Release]
+        c_compiler: [gcc, clang, cl]
+        include:
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+          - os: ubuntu-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+        exclude:
+          - os: windows-latest
+            c_compiler: gcc
+          - os: windows-latest
+            c_compiler: clang
+          - os: windows-latest
+            c_compiler: cl
+            build_type: Debug
+          - os: ubuntu-latest
+            c_compiler: cl
+          - os: ubuntu-latest
+            c_compiler: gcc
+    steps:
+    - uses: actions/checkout@v3
+
+
+    # Ubuntu related steps
+    - name: Free Disk Space (Ubuntu)
+      if: matrix.os == 'ubuntu-latest' && matrix.build_type == 'Debug'
+      uses: jlumbroso/free-disk-space@main
+      with:
+        tool-cache: false
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: true
+        docker-images: true
+        swap-storage: true
+      
+    - name: Get Conan
+      uses: turtlebrowser/get-conan@main
+      
+    - name: Create default profile
+      run: conan profile detect --force
+
+    - name: Create conan profile
+      run: bash setup.sh ${{ matrix.os }} ${{ matrix.build_type }}
+    
+    - name: List conan profiles
+      run: conan profile list
+
+    - name: Install dependencies
+      run: conan install . --build=missing --profile=${{ matrix.os }}
+      
+    # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=build" >> "$GITHUB_OUTPUT"
+
+    # Cmake configuration and build steps for linux and windows
+    - name: Configure CMake
+      if: matrix.os == 'ubuntu-latest'
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_TOOLCHAIN_FILE=${{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_type }}/generators/conan_toolchain.cmake
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DBUILD_TESTS=true
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        -S ${{ github.workspace }}
+
+    - name: Configure CMake
+      if: matrix.os == 'windows-latest'
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_TOOLCHAIN_FILE="./${{ steps.strings.outputs.build-output-dir }}/generators/conan_toolchain.cmake"
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DBUILD_TESTS=true
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        -DCMAKE_CXX_FLAGS_INIT=/W4 /WX /EHsc
+        -S ${{ github.workspace }}
+
+    # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
+    - name: Build
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+    # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
+    - name: Test
+      run: ctest --test-dir ${{ steps.strings.outputs.build-output-dir }}/src/tests/ -C ${{ matrix.build_type }}
+
+    - name: Cache results
+      if: matrix.build_type == 'Release'
+      id: cache-build
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.strings.outputs.build-output-dir }}/src
+        key: ${{ matrix.os }}-${{ matrix.build_type }}-build

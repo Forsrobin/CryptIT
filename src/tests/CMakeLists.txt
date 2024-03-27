@@ -10,7 +10,9 @@ target_link_libraries(crypt-it-test
         gtest::gtest
         )
 
+message(STATUS " CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
+
 add_test(NAME crypt-it-test
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/src/tests/Debug
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/src/tests
         COMMAND crypt-it-test
         )

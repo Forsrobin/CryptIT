@@ -6,14 +6,19 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB SOURCES "./*.cpp")
 
 # Add icons
-include(${CMAKE_SOURCE_DIR}/AddIconToBinary.cmake)
+include(${CMAKE_SOURCE_DIR}/src/AddIconToBinary.cmake)
 AddIconToBinary(SOURCE_FILES ICONS ${CMAKE_SOURCE_DIR}/src/assets/icon.ico ${CMAKE_SOURCE_DIR}/src/assets/icon.icns)
 if (MSVC)
+    message(BUDLING_FOR " Building for Windows")
     add_executable(${TARGET_NAME} WIN32 ${SOURCES} ${SOURCE_FILES} ${HEADERS})
 elseif(APPLE)
+    message(BUDLING_FOR " Building for MacOS")
     add_executable(${TARGET_NAME} MACOSX_BUNDLE ${SOURCES} ${SOURCE_FILES} ${HEADERS})
+elseif(UNIX)
+    message(BUDLING_FOR " Building for Unix")
+    add_executable(${TARGET_NAME} ${SOURCES} ${SOURCE_FILES} ${HEADERS})
 else()
-    message(FATAL_ERROR "Unsupported platform, currently we are only supporting MacOS / Windows")
+    message(FATAL_ERROR "Unsupported platform, currently we are only supporting MacOS / Unix / Windows")
 endif()
 
 target_link_libraries(${TARGET_NAME} PRIVATE 
@@ -22,8 +27,12 @@ target_link_libraries(${TARGET_NAME} PRIVATE
     Qt6::Gui 
     Qt6::Widgets 
     Qt6::Platform 
-    Qt6::QWindowsIntegrationPlugin
     gtest::gtest) 
+
+# If Windows, add  Qt6::QWindowsIntegrationPlugin to the target_link_libraries
+if (MSVC)
+    target_link_libraries(${TARGET_NAME} PRIVATE Qt6::QWindowsIntegrationPlugin)
+endif()
 
 install(TARGETS ${TARGET_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
 
@@ -35,5 +44,6 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E 
 # ================================ #
 if (BUILD_TESTS)
     message(STATUS "Building tests")
-    add_subdirectory(tests)
+    message(PATH "${CMAKE_SOURCE_DIR}/src/tests")
+    add_subdirectory(${CMAKE_SOURCE_DIR}/src/tests)
 endif ()
