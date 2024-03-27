@@ -12,14 +12,22 @@ CryptIT utilizes GitHub Actions to automatically run unit tests on pull requests
 ## How to use
 To use the program, you will need to open the executable and select a directory that you either want to encrypt or decrypt. Once a directory is selected, you can choose the number of threads the program should use; the more threads selected, the faster the process. Afterward, you can press the "Load files" button to view an overview of the number of files and a small sample of the selected files that will either be decrypted or encrypted. The program includes checks to ensure you cannot encrypt already encrypted files and verifies the correctness of the password before decrypting the files. Once a password is entered, only one button, either "encrypt" or "decrypt," will be available depending on whether the files are already encrypted or decrypted.
 
+## Available presets
+| Preset     | Os      | Info                             |
+|:-----------|:--------|:---------------------------------|
+| vs2022-rel | Windows | Compiles Release build with MSVC |
+| vs2022-deb | Windows | Compiles Debug build with MSVC   |
+
 ## How to Run
 ### Build Localy
 1. Clone the repository.
-2. Ensure you have Conan 2.0 installed and an up-to-date MSVC compiler.
-3. Run `build.sh` to build it for release and `debug_build.sh` to build it for debug.
-4. Run CMake configuration by pressing `Ctrl + Shift + P`, then search for `CMake: configure` and select the release or debug kit depending on your previous choice.
-5. Run CMake build by pressing `Ctrl + Shift + P`, then search for `CMake: build`, or simply press `F7` on the keyboard.
-6. If you're using VS Code, select the appropriate launch option. Otherwise, navigate to the build folder located at `build/vs2022-{deb/rel}/src/{Debug/Release}/CryptIT.exe`.
+2. Ensure you have Conan 2.0 installed and an up-to-date compiler of your choice.
+3. Run `build.sh` followed with a argument `rel` or `deb` to build it of your liking.
+4. - Run CMake configuration by pressing `Ctrl + Shift + P`, then search for `CMake: configure` and select the release or debug kit depending on your previous choice.
+   - Or run <a href="Available presets">`cmake --preset {preset}`</a>, se table above for available presets
+6. - Run CMake build by pressing `Ctrl + Shift + P`, then search for `CMake: build`, or simply press `F7` on the keyboard.
+   - OR run `cmake --build --preset {preset}`
+7. If you're using VS Code, select the appropriate launch option. Otherwise, navigate to the build folder located at `build/{preset}/src/{Debug/Release}/CryptIT.exe`.
 
 ### Downlaod binary
 Go to [releases](https://github.com/Forsrobin/CryptIT/releases) and download the latest version depending on your operating system.
