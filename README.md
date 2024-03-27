@@ -10,6 +10,7 @@ The application comprises a section for cryptographic operations (`Crypto`), a b
 
 ## How to Run
 
+### Build Localy
 1. Clone the repository.
 2. Ensure you have Conan 2.0 installed and an up-to-date MSVC compiler.
 3. Run `build.sh` to build it for release and `debug_build.sh` to build it for debug.
@@ -17,10 +18,14 @@ The application comprises a section for cryptographic operations (`Crypto`), a b
 5. Run CMake build by pressing `Ctrl + Shift + P`, then search for `CMake: build`, or simply press `F7` on the keyboard.
 6. If you're using VS Code, select the appropriate launch option. Otherwise, navigate to the build folder located at `build/vs2022-{deb/rel}/src/{Debug/Release}/CryptIT.exe`.
 
+### Downlaod binary
+Go to [releases]([https://duckduckgo.com](https://github.com/Forsrobin/CryptIT/releases)) and download the latest version depending on your operating system.
+
 ## Dependencies
 
 - Qt/6.6.2
 - Crypto++/8.9.0
+- gtest/1.14.0
 
 ## License
 
