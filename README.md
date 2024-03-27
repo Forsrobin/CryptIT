@@ -19,7 +19,7 @@ The application comprises a section for cryptographic operations (`Crypto`), a b
 6. If you're using VS Code, select the appropriate launch option. Otherwise, navigate to the build folder located at `build/vs2022-{deb/rel}/src/{Debug/Release}/CryptIT.exe`.
 
 ### Downlaod binary
-Go to [releases]([https://duckduckgo.com](https://github.com/Forsrobin/CryptIT/releases)) and download the latest version depending on your operating system.
+Go to [releases](https://github.com/Forsrobin/CryptIT/releases) and download the latest version depending on your operating system.
 
 ## Dependencies
 
