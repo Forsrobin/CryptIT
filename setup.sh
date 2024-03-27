@@ -10,7 +10,7 @@ if [ $1 == "ubuntu-latest" ]; then
 
     echo "[settings]
 arch=x86_64
-build_type=Debug
+build_type=$2
 compiler=gcc
 compiler.cppstd=gnu17
 compiler.libcxx=libstdc++11
@@ -36,7 +36,7 @@ if [ $1 == "windows-latest" ]; then
 
     echo "[settings]
 arch=x86_64
-build_type=Debug
+build_type=$2
 compiler=msvc
 compiler.cppstd=23
 compiler.runtime=dynamic

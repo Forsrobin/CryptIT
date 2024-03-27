@@ -66,7 +66,7 @@ jobs:
       run: conan profile detect --force
 
     - name: Create conan profile
-      run: bash setup.sh ${{ matrix.os }}
+      run: bash setup.sh ${{ matrix.os }} ${{ matrix.build_type }}
     
     - name: List conan profiles
       run: conan profile list
@@ -98,7 +98,11 @@ jobs:
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
+    - name: Install tree
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      run: sudo apt install tree && sudo tree -a
+
     - name: Test
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}/src/tests
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}/src
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: ctest -C ${{ matrix.build_type }}
