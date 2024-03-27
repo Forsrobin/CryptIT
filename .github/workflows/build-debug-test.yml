@@ -72,14 +72,17 @@ jobs:
       run: conan profile list
 
     - name: Install dependencies
-      run: conan install . --build=missing --profile=${{ matrix.os }} -s build_type=${{ matrix.build_type }}
+      run: conan install . --build=missing --profile=${{ matrix.os }}
       
+    - name: Install Tree
+      run: sudo apt install tree && sudo tree -a
+
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
       id: strings
       shell: bash
       run: |
-        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=build" >> "$GITHUB_OUTPUT"
 
     # Activate conan environment
     - name: Activate conan environment
@@ -93,14 +96,13 @@ jobs:
         -DCMAKE_TOOLCHAIN_FILE=${{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_type }}/generators/conan_toolchain.cmake
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DBUILD_TESTS=true
-        -S ${{ github.workspace }}
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
-    - name: Install tree
-      run: sudo apt install tree && sudo tree -a
+    - name: Tree
+      run: sudo tree -a
 
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}/src/tests
