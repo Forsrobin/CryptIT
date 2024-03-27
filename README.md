@@ -24,7 +24,7 @@ To use the program, you will need to open the executable and select a directory 
 2. Ensure you have Conan 2.0 installed and an up-to-date compiler of your choice.
 3. Run `build.sh` followed with a argument `rel` or `deb` to build it of your liking.
 4. - Run CMake configuration by pressing `Ctrl + Shift + P`, then search for `CMake: configure` and select the release or debug kit depending on your previous choice.
-   - Or run <a href="Available presets">`cmake --preset {preset}`</a>, se table above for available presets
+   - Or run <a href="#Available presets">`cmake --preset {preset}`</a>, se table above for available presets
 6. - Run CMake build by pressing `Ctrl + Shift + P`, then search for `CMake: build`, or simply press `F7` on the keyboard.
    - OR run `cmake --build --preset {preset}`
 7. If you're using VS Code, select the appropriate launch option. Otherwise, navigate to the build folder located at `build/{preset}/src/{Debug/Release}/CryptIT.exe`.
