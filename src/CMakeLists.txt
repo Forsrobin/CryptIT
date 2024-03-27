@@ -27,8 +27,12 @@ target_link_libraries(${TARGET_NAME} PRIVATE
     Qt6::Gui 
     Qt6::Widgets 
     Qt6::Platform 
-    Qt6::QWindowsIntegrationPlugin
     gtest::gtest) 
+
+# If Windows, add  Qt6::QWindowsIntegrationPlugin to the target_link_libraries
+if (MSVC)
+    target_link_libraries(${TARGET_NAME} PRIVATE Qt6::QWindowsIntegrationPlugin)
+endif()
 
 install(TARGETS ${TARGET_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
 
