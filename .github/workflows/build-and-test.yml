@@ -75,10 +75,6 @@ jobs:
       run: |
         echo "build-output-dir=build" >> "$GITHUB_OUTPUT"
 
-    - name: Dir
-      if: matrix.os == 'windows-latest'
-      run: Get-ChildItem -Recurse
-
     # Cmake configuration and build steps for linux and windows
     - name: Configure CMake
       if: matrix.os == 'ubuntu-latest'
