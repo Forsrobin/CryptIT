@@ -75,9 +75,9 @@ jobs:
       run: |
         echo "build-output-dir=build" >> "$GITHUB_OUTPUT"
 
-    - name: Tree
+    - name: Dir
       if: matrix.os == 'windows-latest'
-      run: tree
+      run: dir /s
 
     # Cmake configuration and build steps for linux and windows
     - name: Configure CMake
