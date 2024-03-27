@@ -67,21 +67,19 @@ jobs:
       run: conan install . --build=missing --profile=${{ matrix.os }}
       
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
-    - name: Set reusable strings linux
-      if: matrix.os == 'ubuntu-latest'
-      id: strings
-      shell: bash
-      run: |
-        echo "build-output-dir=build" >> "$GITHUB_OUTPUT"
-        echo "conan-toolchain-file=build/${{ matrix.build_type }}" >> "$GITHUB_OUTPUT"
-
     - name: Set reusable strings windows
-      if: matrix.os == 'windows-latest'
       id: strings
       shell: bash
       run: |
-        echo "build-output-dir=build" >> "$GITHUB_OUTPUT"
-        echo "conan-toolchain-file=build" >> "$GITHUB_OUTPUT"
+        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+          echo "I am running on Linux"
+          echo "build-output-dir=build" >> "$GITHUB_OUTPUT"
+          echo "conan-toolchain-file=build" >> "$GITHUB_OUTPUT"
+        elif [ "${{ github.event_name }}" == "windows-latest" ]; then
+          echo "I am running on Windows"
+          echo "build-output-dir=build" >> "$GITHUB_OUTPUT"
+          echo "conan-toolchain-file=build/${{ matrix.build_type }}" >> "$GITHUB_OUTPUT"
+        fi
 
     # Cmake configuration and build steps
     - name: Configure CMake
