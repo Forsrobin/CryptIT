@@ -80,7 +80,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}$/{{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_type }}/generators/conan_toolchain.cmake
+        -DCMAKE_TOOLCHAIN_FILE=${{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_type }}/generators/conan_toolchain.cmake
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DBUILD_TESTS=true
         -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
