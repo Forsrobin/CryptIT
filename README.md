@@ -13,10 +13,10 @@ CryptIT utilizes GitHub Actions to automatically run unit tests on pull requests
 To use the program, you will need to open the executable and select a directory that you either want to encrypt or decrypt. Once a directory is selected, you can choose the number of threads the program should use; the more threads selected, the faster the process. Afterward, you can press the "Load files" button to view an overview of the number of files and a small sample of the selected files that will either be decrypted or encrypted. The program includes checks to ensure you cannot encrypt already encrypted files and verifies the correctness of the password before decrypting the files. Once a password is entered, only one button, either "encrypt" or "decrypt," will be available depending on whether the files are already encrypted or decrypted.
 
 ## Available presets
-| Preset     | Os      | Info                             |
-|:-----------|:--------|:---------------------------------|
-| vs2022-rel | Windows | Compiles Release build with MSVC |
-| vs2022-deb | Windows | Compiles Debug build with MSVC   |
+| Preset     | Os      | Info                             | Prerequsite                                                  |
+|:-----------|:--------|:---------------------------------|:-------------------------------------------------------------|
+| vs2022-rel | Windows | Compiles Release build with MSVC | [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) or newer (not tested with older versions) |
+| vs2022-deb | Windows | Compiles Debug build with MSVC   | [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) or newer (not tested with older versions) |
 
 ## How to Run
 ### Build Localy
