@@ -13,13 +13,14 @@
 
 #include "cryptoUI.h"
 
+// Disable the console window on Windows if the application is build as a GUI application
+#ifdef _WIN32
+#include <windows.h>
+
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin);
 
-// Disable the console window on Windows if the application is build as a GUI application
-// #ifdef _WIN32
-// #include <windows.h>
-// #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
-// #endif
+#endif
 
 int main(int argc, char *argv[])
 {
