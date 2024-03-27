@@ -21,7 +21,6 @@ jobs:
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
-            build_type: Debug
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
@@ -30,6 +29,9 @@ jobs:
             c_compiler: gcc
           - os: windows-latest
             c_compiler: clang
+          - os: windows-latest
+            c_compiler: cl
+            build_type: Debug
           - os: ubuntu-latest
             c_compiler: cl
           - os: ubuntu-latest
@@ -67,28 +69,32 @@ jobs:
       run: conan install . --build=missing --profile=${{ matrix.os }}
       
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
-    - name: Set reusable strings windows
+    - name: Set reusable strings
       id: strings
       shell: bash
       run: |
-        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          echo "I am running on Linux"
-          echo "build-output-dir=build" >> "$GITHUB_OUTPUT"
-          echo "conan-toolchain-file=build" >> "$GITHUB_OUTPUT"
-        elif [ "${{ github.event_name }}" == "windows-latest" ]; then
-          echo "I am running on Windows"
-          echo "build-output-dir=build" >> "$GITHUB_OUTPUT"
-          echo "conan-toolchain-file=build/${{ matrix.build_type }}" >> "$GITHUB_OUTPUT"
-        fi
+        echo "build-output-dir=build" >> "$GITHUB_OUTPUT"
 
-    # Cmake configuration and build steps
+    # Cmake configuration and build steps for linux and windows
     - name: Configure CMake
+      if: matrix.os == 'ubuntu-latest'
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -DCMAKE_TOOLCHAIN_FILE=${{ steps.strings.outputs.conan-toolchain-file }}/generators/conan_toolchain.cmake
+        -DCMAKE_TOOLCHAIN_FILE=${{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_type }}/generators/conan_toolchain.cmake
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DBUILD_TESTS=true
         -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        -S ${{ github.workspace }}
+
+    - name: Configure CMake
+      if: matrix.os == 'windows-latest'
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_TOOLCHAIN_FILE=${{ steps.strings.outputs.build-output-dir }}/generators/conan_toolchain.cmake
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DBUILD_TESTS=true
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        -DCMAKE_CXX_FLAGS_INIT=/W4 /WX /EHsc
         -S ${{ github.workspace }}
 
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
