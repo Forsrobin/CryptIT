@@ -92,6 +92,7 @@ jobs:
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
         -DCMAKE_TOOLCHAIN_FILE=${{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_type }}/generators/conan_toolchain.cmake
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DBUILD_TESTS=true
         -S ${{ github.workspace }}
 
     - name: Build
@@ -99,10 +100,9 @@ jobs:
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
     - name: Install tree
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: sudo apt install tree && sudo tree -a
 
     - name: Test
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}/src
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}/src/tests
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: ctest -C ${{ matrix.build_type }}
