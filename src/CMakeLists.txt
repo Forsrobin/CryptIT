@@ -44,5 +44,6 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E 
 # ================================ #
 if (BUILD_TESTS)
     message(STATUS "Building tests")
-    add_subdirectory(tests)
+    message(PATH "${CMAKE_SOURCE_DIR}/src/tests")
+    add_subdirectory(${CMAKE_SOURCE_DIR}/src/tests)
 endif ()
