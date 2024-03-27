@@ -39,7 +39,7 @@ jobs:
 
     # Ubuntu related steps
     - name: Free Disk Space (Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu-latest' && matrix.build_type == 'Debug'
       uses: jlumbroso/free-disk-space@main
       with:
         tool-cache: false
@@ -77,8 +77,13 @@ jobs:
         echo "build-output-dir=build" >> "$GITHUB_OUTPUT"
 
     # Activate conan environment
-    - name: Activate conan environment
+    - name: Activate conan environment linux
+      if: matrix.os == 'ubuntu-latest'
       run: bash ${{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_type }}/generators/conanbuild.sh
+
+    - name: Activate conan environment Windows
+      if: matrix.os == 'windows-latest'
+      run: ./${{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_type }}/generators/conanbuild.bat
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
@@ -96,6 +101,5 @@ jobs:
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
     - name: Test
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}/src/tests/
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: ctest --test-dir ${{ steps.strings.outputs.build-output-dir }}/src/tests/ -C ${{ matrix.build_type }}
