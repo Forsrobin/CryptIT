@@ -104,20 +104,7 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ls -la
 
-    - name: Ls 2
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_type }}
-      # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ls -la
-
-    - name: Ls 3
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_type }}/tests/
-      # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ls -la
-
     - name: Test
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_type }}
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}/src/tests
       # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{ matrix.build_type }}
