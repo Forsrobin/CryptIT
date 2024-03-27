@@ -47,17 +47,17 @@ jobs:
 
 
     # Ubuntu related steps
-    - name: Free Disk Space (Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
-      uses: jlumbroso/free-disk-space@main
-      with:
-        tool-cache: false
-        android: true
-        dotnet: true
-        haskell: true
-        large-packages: true
-        docker-images: true
-        swap-storage: true
+    # - name: Free Disk Space (Ubuntu)
+    #   if: matrix.os == 'ubuntu-latest'
+    #   uses: jlumbroso/free-disk-space@main
+    #   with:
+    #     tool-cache: false
+    #     android: true
+    #     dotnet: true
+    #     haskell: true
+    #     large-packages: true
+    #     docker-images: true
+    #     swap-storage: true
       
     - name: Get Conan
       uses: turtlebrowser/get-conan@main
@@ -75,6 +75,7 @@ jobs:
       run: conan install . --build=missing --profile=${{ matrix.os }}
       
     - name: Install Tree
+      if: matrix.os == 'ubuntu-latest'
       run: sudo apt install tree && sudo tree -a
 
     - name: Set reusable strings
@@ -92,17 +93,19 @@ jobs:
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: >
-        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        cmake
         -DCMAKE_TOOLCHAIN_FILE=${{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_type }}/generators/conan_toolchain.cmake
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DBUILD_TESTS=true
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        -DCMAKE_CXX_FLAGS_INIT="/W4 /WX /EHsc"
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
     - name: Tree
-      run: sudo tree -a
+      run: tree -a
 
     - name: Test
       working-directory: ${{ steps.strings.outputs.build-output-dir }}/src/tests
