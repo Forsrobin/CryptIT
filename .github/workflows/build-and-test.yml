@@ -1,10 +1,8 @@
 name: Build, test and cache results
 
 on:
-  push:
-    branches: [ "ci" ]
   pull_request:
-    branches: [ "ci" ]
+    branches: [ "main" ]
 
 jobs:
   build:
