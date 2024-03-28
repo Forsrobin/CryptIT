@@ -3,7 +3,7 @@
 <img src="src/assets/logo_big.png" width="50%">
 
 ## Why?
-I decided to do this project to learn more about bigger c++ project and how to develop, maintain and create unit tests and pipelines to ensure sustainability. 
+I decided to do this project to learn more about bigger c++ project and how to develop, maintain and create unit tests and pipelines. 
 
 ## Description
 This is a Qt application that uses the Crypto++ library, allowing users to select a directory and perform various cryptographic operations. The application utilizes QMainWindow for the main window and QVBoxLayout for the layout.
