@@ -96,4 +96,5 @@
     "qapplication": "cpp"
   },
   "cmake.useCMakePresets": "always",
+  "cmake.sourceDirectory": "/home/robin/Development/CryptIT",
 }

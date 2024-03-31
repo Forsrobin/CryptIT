@@ -2,10 +2,24 @@
   "version": 2,
   "configurePresets": [
     {
-      "name": "conan",
+      "name": "conan-windows",
       "hidden": true,
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/build/generators/conan_toolchain.cmake"
+      }
+    },
+    {
+      "name": "conan-unix-rel",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/build/Release/generators/conan_toolchain.cmake"
+      }
+    },
+    {
+      "name": "conan-unix-deb",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/build/Debug/generators/conan_toolchain.cmake"
       }
     },
     {
@@ -15,7 +29,7 @@
         "CMAKE_BUILD_TYPE": "Release",
         "BUILD_TESTS": true,
         "CMAKE_EXPORT_COMPILE_COMMANDS": true,
-        "CMAKE_EXE_LINKER_FLAGS_INIT": "$env{CMAKE_EXE_LINKER_FLAGS_INIT} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup" 
+        "CMAKE_EXE_LINKER_FLAGS_INIT": "$env{CMAKE_EXE_LINKER_FLAGS_INIT}"
       },
       "warnings": {
         "unusedCli": false
@@ -31,6 +45,16 @@
       }
     },
     {
+      "name": "unix-ninja",
+      "hidden": true,
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang-17",
+        "CMAKE_CXX_COMPILER": "clang++-17",
+        "CMAKE_CXX_FLAGS_INIT": "$env{CMAKE_CXX_FLAGS} -Werror -Wall -Wextra -pedantic"
+      }
+    },
+    {
       "name": "vs2022",
       "hidden": true,
       "generator": "Visual Studio 17 2022",
@@ -39,11 +63,38 @@
       }
     },
     {
+      "name": "unix-deb-ninja",
+      "displayName": "Unix Ninja Clang Debug",
+      "binaryDir": "${sourceDir}/build/unix-deb-ninja",
+      "inherits": [
+        "unix-ninja",
+        "deb",
+        "conan-unix-deb"
+      ],
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-O0 --coverage -g -fsanitize=address",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/unix-deb-ninja/install"
+      }
+    },
+    {
+      "name": "unix-rel-ninja",
+      "displayName": "Unix Ninja Clang Release",
+      "binaryDir": "${sourceDir}/build/unix-rel-ninja",
+      "inherits": [
+        "unix-ninja",
+        "conan-unix-rel",
+        "rel"
+      ],
+      "cacheVariables": {
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/build/unix-rel-ninja/install"
+      }
+    },
+    {
       "name": "vs2022-rel",
       "displayName": "Visual Studio 2022 Release",
       "binaryDir": "${sourceDir}/build/vs2022-rel",
       "inherits": [
-        "conan",
+        "conan-windows",
         "vs2022",
         "rel"
       ],
@@ -56,7 +107,7 @@
       "displayName": "Visual Studio 2022 Debug",
       "binaryDir": "${sourceDir}/build/vs2022-deb",
       "inherits": [
-        "conan",
+        "conan-windows",
         "vs2022",
         "deb"
       ],
@@ -76,6 +127,18 @@
       "name": "vs2022-deb",
       "displayName": "Visual Studio 2022 Debug Build",
       "configurePreset": "vs2022-deb",
+      "configuration": "Debug"
+    },
+    {
+      "name": "unix-rel-ninja",
+      "displayName": "Unix Ninja Release Build",
+      "configurePreset": "unix-rel-ninja",
+      "configuration": "Release"
+    },
+    {
+      "name": "unix-deb-ninja",
+      "displayName": "Unix Ninja Debug Build",
+      "configurePreset": "unix-deb-ninja",
       "configuration": "Debug"
     }
   ]
