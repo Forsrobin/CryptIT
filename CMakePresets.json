@@ -27,7 +27,6 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
-        "BUILD_TESTS": true,
         "CMAKE_EXPORT_COMPILE_COMMANDS": true,
         "CMAKE_EXE_LINKER_FLAGS_INIT": "$env{CMAKE_EXE_LINKER_FLAGS_INIT}"
       },
@@ -59,6 +58,7 @@
       "hidden": true,
       "generator": "Visual Studio 17 2022",
       "cacheVariables": {
+        "BUILD_CUDA": true,
         "CMAKE_CXX_FLAGS_INIT": "$env{CMAKE_CXX_FLAGS_INIT} $env{CMAKE_CXX_FLAGS} /W4 /WX /EHsc"
       }
     },

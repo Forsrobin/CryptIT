@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.28.1)
 project(CryptIT LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
@@ -13,9 +13,11 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN On)
 set(TARGET_NAME ${PROJECT_NAME})
 
 if (BUILD_TESTS)
-    # Print out the build type
-    message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
     enable_testing()
+endif ()
+
+if(BUILD_CUDA)
+  enable_language(CUDA)
 endif ()
 
 # ================================ #
@@ -37,6 +39,13 @@ if (NOT GTest_FOUND)
   message(FATAL_ERROR "GTest not found")
 endif (NOT GTest_FOUND)
 
+include(CheckLanguage)
+check_language(CUDA)
+
+if(NOT DEFINED CMAKE_CUDA_STANDARD)
+    set(CMAKE_CUDA_STANDARD 11)
+    set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+endif()
 
 # ================================ #
 # === Create build targets ======= #

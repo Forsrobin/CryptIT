@@ -17,6 +17,8 @@ build/
 *.dylib
 *.dll
 
+.vscode/settings.json
+
 # Fortran module files
 *.mod
 *.smod
