@@ -41,5 +41,5 @@ Go to [releases](https://github.com/Forsrobin/CryptIT/releases) and download the
 - gtest/1.14.0
 
 ## License
-
+Common
 [MIT](LICENSE)
