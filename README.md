@@ -2,7 +2,7 @@
 
 <img src="src/assets/logo_big.png" width="50%">
 
-## Why?
+## Why build this?
 I decided to do this project to learn more about bigger c++ project and how to develop, maintain and create unit tests and pipelines. 
 
 ## Description
